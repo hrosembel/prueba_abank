@@ -9,11 +9,11 @@ namespace PruebaABANK.BLL.Interfaces
 {
     public interface IUsuarioService
     {
-        Task<IEnumerable<UsuarioDto>> GetAll();
-        Task<UsuarioDto?> GetById(int id);
+        Task<IEnumerable<UsuarioLecturaDto>> GetAll();
+        Task<UsuarioLecturaDto?> GetById(int id);
         Task<UsuarioDto?> GetByCredentials(LoginDto loginDto);
-        Task<int> Add(UsuarioDto usuario);
-        Task<bool> Edit(UsuarioDto usuario);
+        Task<int> Add(UsuarioEdicionDto usuario);
+        Task<bool> Edit(int id, UsuarioEdicionDto usuario);
         Task<bool> Delete(int id);
     }
 }

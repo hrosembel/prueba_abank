@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PruebaABANK.API;
 using PruebaABANK.BLL.Interfaces;
 using PruebaABANK.BLL.Services;
 using PruebaABANK.DAL.Entities;
@@ -13,7 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+// Configura el convertidor personalizado para fechas
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new CustomDateTimeConverter());
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -92,11 +99,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(/*c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mi API v1");
-        c.RoutePrefix = string.Empty; // Esto hace que Swagger UI esté en la raíz del sitio
-    }*/);
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

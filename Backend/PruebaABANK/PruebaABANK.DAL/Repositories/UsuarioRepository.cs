@@ -72,7 +72,7 @@ namespace PruebaABANK.DAL.Repositories
             using (var connection = _dbContext.CreateConnection())
             {
                 var usuario = await connection.QuerySingleOrDefaultAsync<Usuario>(
-                "SELECT * FROM usuarios WHERE nombres=@UserName and password=@Password", login);
+                "SELECT * FROM usuarios WHERE email=@Email and password=@Password", login);
                 return usuario;
             }
         }

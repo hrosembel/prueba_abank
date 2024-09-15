@@ -17,7 +17,7 @@ namespace PruebaABANK.BLL.Services
         {
             _usuarioRepository = usuarioRepository;
         }
-        public async Task<int> Add(UsuarioDto usuario)
+        public async Task<int> Add(UsuarioEdicionDto usuario)
         {
             Usuario entity = new Usuario
             {
@@ -37,11 +37,11 @@ namespace PruebaABANK.BLL.Services
             return await _usuarioRepository.Delete(id);
         }
 
-        public async Task<bool> Edit(UsuarioDto usuario)
+        public async Task<bool> Edit(int id, UsuarioEdicionDto usuario)
         {
             var entity = new Usuario
             {
-                id = usuario.id,
+                id = id,
                 Nombres = usuario.Nombres,
                 Apellidos = usuario.Apellidos,
                 FechaNacimiento = usuario.FechaNacimiento,
@@ -53,17 +53,16 @@ namespace PruebaABANK.BLL.Services
             return await _usuarioRepository.Edit(entity);
         }
 
-        public async Task<IEnumerable<UsuarioDto>> GetAll()
+        public async Task<IEnumerable<UsuarioLecturaDto>> GetAll()
         {
             List<Usuario> usuarios = await _usuarioRepository.GetAll();
-            return usuarios.Select(usuario => new UsuarioDto
+            return usuarios.Select(usuario => new UsuarioLecturaDto
             {
                 id = usuario.id,
                 Nombres = usuario.Nombres,
                 Apellidos = usuario.Apellidos,
                 FechaNacimiento = usuario.FechaNacimiento,
                 Direccion = usuario.Direccion,
-                Password = usuario.Password,
                 Telefono = usuario.Telefono,
                 Email = usuario.Email
             });
@@ -75,7 +74,7 @@ namespace PruebaABANK.BLL.Services
                 new LoginEntity 
                 { 
                     Password = loginDto.Password,
-                    UserName = loginDto.UserName
+                    Email = loginDto.Email
                 });
 
             if (usuario == null)
@@ -94,19 +93,18 @@ namespace PruebaABANK.BLL.Services
             };
         }
 
-        public async Task<UsuarioDto?> GetById(int id)
+        public async Task<UsuarioLecturaDto?> GetById(int id)
         {
             var usuario = await _usuarioRepository.GetById(id);
             if (usuario == null)
                 return null;
-            return new UsuarioDto
+            return new UsuarioLecturaDto
             {
                 id = usuario.id,
                 Nombres = usuario.Nombres,
                 Apellidos = usuario.Apellidos,
                 FechaNacimiento = usuario.FechaNacimiento,
                 Direccion = usuario.Direccion,
-                Password = usuario.Password,
                 Telefono = usuario.Telefono,
                 Email = usuario.Email
             };

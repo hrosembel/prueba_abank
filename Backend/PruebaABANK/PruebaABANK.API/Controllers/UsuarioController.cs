@@ -13,12 +13,12 @@ namespace PruebaABANK.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class UserController : ControllerBase
+    public class UsuarioController : ControllerBase
     {
         IUsuarioService _usuarioService;
         private readonly IConfiguration _configuration;
 
-        public UserController(IConfiguration configuration , IUsuarioService usuarioService)
+        public UsuarioController(IConfiguration configuration , IUsuarioService usuarioService)
         {
             _configuration = configuration;
             _usuarioService = usuarioService;
@@ -37,7 +37,7 @@ namespace PruebaABANK.API.Controllers
                     // Validar usuario 
                     var claims = new[]
                     {
-                        new Claim(ClaimTypes.Name, model.UserName)
+                        new Claim(ClaimTypes.Name, model.Email)
                         // Añadir más claims según sea necesario
                     };
 
@@ -87,7 +87,7 @@ namespace PruebaABANK.API.Controllers
         {
             try
             {
-                UsuarioDto? usuario = await _usuarioService.GetById(id);
+                UsuarioLecturaDto? usuario = await _usuarioService.GetById(id);
                 if (usuario == null)
                     return NotFound();
 
@@ -105,13 +105,22 @@ namespace PruebaABANK.API.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Add([FromBody] UsuarioDto usuario)
+        public async Task<IActionResult> Add([FromBody] UsuarioEdicionDto usuario)
         {
             try
             {
                 int usuarioId = await _usuarioService.Add(usuario);
-                usuario.id = usuarioId;
-                return StatusCode(StatusCodes.Status201Created,usuario);
+                return StatusCode(StatusCodes.Status201Created,new UsuarioDto
+                {
+                    id = usuarioId,
+                    Nombres = usuario.Nombres,
+                    Apellidos = usuario.Apellidos,
+                    FechaNacimiento = usuario.FechaNacimiento,
+                    Direccion = usuario.Direccion,
+                    Password = usuario.Password,
+                    Telefono = usuario.Telefono,
+                    Email = usuario.Email
+                });
             }
             catch
             {
@@ -119,13 +128,13 @@ namespace PruebaABANK.API.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> Edit([FromBody] UsuarioDto usuario)
+        public async Task<IActionResult> Edit(int id, [FromBody]UsuarioEdicionDto usuario)
         {
             try
             {
-                bool isUpdated = await _usuarioService.Edit(usuario);
+                bool isUpdated = await _usuarioService.Edit(id, usuario);
                 if (isUpdated)
                 {
                     return Ok(usuario);
@@ -145,7 +154,7 @@ namespace PruebaABANK.API.Controllers
         {
             try
             {
-                UsuarioDto? usuario = await _usuarioService.GetById(id);
+                UsuarioLecturaDto? usuario = await _usuarioService.GetById(id);
 
                 bool isDeleted = await _usuarioService.Delete(id);
                 if (isDeleted)
